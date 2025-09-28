@@ -24,10 +24,11 @@ def main():
     # else:
     #     print("EOF  null") # Placeholder, replace this line when implementing the scanner
 
-    for char in file_contents:
-        if char not in "(){},.-+;*":
-            print(f"[line 1] Error: Unexpected character: {char}")
-
+    # for inv in file_contents:
+    #     if inv not in "(){,}.-+;*":
+    #         print(f"[line 1] Error: Unexpected character: {inv}")
+    #         continue
+    had_error = False
     for char in file_contents:
         if char == "(":
             print("LEFT_PAREN ( null")
@@ -50,9 +51,13 @@ def main():
         elif char == "*":
             print("STAR * null")
         else:
-            print("[line N] Error: Unexpected character: {char}")
+            had_error = True
+            print(f"[line 1] Error: Unexpected character: {char}", file=sys.stderr)
 
     print("EOF  null")
+
+    if had_error:
+        sys.exit(65)
 
 
 if __name__ == "__main__":
