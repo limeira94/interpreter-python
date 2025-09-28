@@ -25,6 +25,10 @@ def main():
     #     print("EOF  null") # Placeholder, replace this line when implementing the scanner
 
     for char in file_contents:
+        if char not in "(){},.-+;*":
+            print(f"[line 1] Error: Unexpected character: {char}")
+
+    for char in file_contents:
         if char == "(":
             print("LEFT_PAREN ( null")
         elif char == ")":
@@ -45,6 +49,8 @@ def main():
             print("SEMICOLON ; null")
         elif char == "*":
             print("STAR * null")
+        else:
+            print("[line N] Error: Unexpected character: {char}")
 
     print("EOF  null")
 
