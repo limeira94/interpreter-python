@@ -24,10 +24,6 @@ def main():
     # else:
     #     print("EOF  null") # Placeholder, replace this line when implementing the scanner
 
-    # for inv in file_contents:
-    #     if inv not in "(){,}.-+;*":
-    #         print(f"[line 1] Error: Unexpected character: {inv}")
-    #         continue
     had_error = False
     for char in file_contents:
         if char == "(":
