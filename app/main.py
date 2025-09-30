@@ -66,20 +66,20 @@ class Token:
 
 
 class Scanner:
-    _SINGLE_CHAR_TOKENS = {
-        "(": TokenType.LEFT_PAREN,
-        ")": TokenType.RIGHT_PAREN,
-        "{": TokenType.LEFT_BRACE,
-        "}": TokenType.RIGHT_BRACE,
-        ",": TokenType.COMMA,
-        ".": TokenType.DOT,
-        "-": TokenType.MINUS,
-        "+": TokenType.PLUS,
-        ";": TokenType.SEMICOLON,
-        "*": TokenType.STAR,
-        "==": TokenType.EQUAL_EQUAL,
-        "=": TokenType.EQUAL,
-    }
+    # _SINGLE_CHAR_TOKENS = {
+    #     "(": TokenType.LEFT_PAREN,
+    #     ")": TokenType.RIGHT_PAREN,
+    #     "{": TokenType.LEFT_BRACE,
+    #     "}": TokenType.RIGHT_BRACE,
+    #     ",": TokenType.COMMA,
+    #     ".": TokenType.DOT,
+    #     "-": TokenType.MINUS,
+    #     "+": TokenType.PLUS,
+    #     ";": TokenType.SEMICOLON,
+    #     "*": TokenType.STAR,
+    #     "==": TokenType.EQUAL_EQUAL,
+    #     "=": TokenType.EQUAL,
+    # }
 
     def __init__(self, source: str):
         self.source = source  # "(()))++--**"
@@ -121,12 +121,22 @@ class Scanner:
             case "*":
                 self._add_token(TokenType.STAR)
             case "!":
-                if self._math("="):
+                if self._match("="):
                     self._add_token(TokenType.BANG_EQUAL)
                 else:
                     self._add_token(TokenType.BANG)
+            case "<":
+                if self._match("="):
+                    self._add_token(TokenType.LESS_EQUAL)
+                else:
+                    self._add_token(TokenType.LESS)
+            case ">":
+                if self._match("="):
+                    self._add_token(TokenType.GREATER_EQUAL)
+                else:
+                    self._add_token(TokenType.GREATER)
             case "=":
-                if self._math("="):
+                if self._match("="):
                     self._add_token(TokenType.EQUAL_EQUAL)
                 else:
                     self._add_token(TokenType.EQUAL)
@@ -149,7 +159,7 @@ class Scanner:
         self.current += 1
         return char
 
-    def _math(self, expected: str) -> bool:
+    def _match(self, expected: str) -> bool:
         if self._is_at_end():
             return False
         if self.source[self.current] != expected:
