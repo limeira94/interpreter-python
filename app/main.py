@@ -120,6 +120,11 @@ class Scanner:
                 self._add_token(TokenType.SEMICOLON)
             case "*":
                 self._add_token(TokenType.STAR)
+            case "!":
+                if self._math("="):
+                    self._add_token(TokenType.BANG_EQUAL)
+                else:
+                    self._add_token(TokenType.BANG)
             case "=":
                 if self._math("="):
                     self._add_token(TokenType.EQUAL_EQUAL)
