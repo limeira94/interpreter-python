@@ -155,6 +155,9 @@ class Scanner:
             case "\n":
                 self.line += 1
                 pass
+            case '"':
+                self._string()
+                pass
             case _:
                 print(
                     f"[line {self.line}] Error: Unexpected character: {char}",
@@ -187,6 +190,25 @@ class Scanner:
         if self._is_at_end():
             return "\0"
         return self.source[self.current]
+
+    def _string(self):
+        while self._peek() != '"' and not self._is_at_end():
+            if self._peek == "\n":
+                self.line += 1
+            self._advance()
+
+        if self._is_at_end():
+            print(
+                f"[line {self.line}] Error: Unterminated string.",
+                file=sys.stderr,
+            )
+            self.had_error = True
+            return
+
+        self._advance()
+
+        value = self.source[self.start + 1 : self.current - 1]
+        self._add_token(TokenType.STRING, value)
 
 
 def main():
