@@ -61,7 +61,7 @@ class Token:
     literal: object
     line: int
 
-    def __str__(self):
+    def __repr__(self):
         return f"{self.type.name} {self.lexeme} {self.literal if self.literal is not None else 'null'}"
 
 
@@ -140,6 +140,12 @@ class Scanner:
                     self._add_token(TokenType.EQUAL_EQUAL)
                 else:
                     self._add_token(TokenType.EQUAL)
+            case "/":
+                if self._match("/"):
+                    while self._peek() != "\n" and not self._is_at_end():
+                        self._advance()
+                else:
+                    self._add_token(TokenType.SLASH)
             case _:
                 print(
                     f"[line {self.line}] Error: Unexpected character: {char}",
@@ -167,6 +173,11 @@ class Scanner:
 
         self.current += 1
         return True
+
+    def _peek(self):
+        if self._is_at_end():
+            return "\0"
+        return self.source[self.current]
 
 
 def main():
