@@ -146,6 +146,15 @@ class Scanner:
                         self._advance()
                 else:
                     self._add_token(TokenType.SLASH)
+            case " ":
+                pass
+            case "\r":
+                pass
+            case "\t":
+                pass
+            case "\n":
+                self.line += 1
+                pass
             case _:
                 print(
                     f"[line {self.line}] Error: Unexpected character: {char}",
