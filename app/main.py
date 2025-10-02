@@ -159,11 +159,14 @@ class Scanner:
                 self._string()
                 pass
             case _:
-                print(
-                    f"[line {self.line}] Error: Unexpected character: {char}",
-                    file=sys.stderr,
-                )
-                self.had_error = True
+                if self._is_digit(char):
+                    self._number()
+                else:
+                    print(
+                        f"[line {self.line}] Error: Unexpected character: {char}",
+                        file=sys.stderr,
+                    )
+                    self.had_error = True
 
     def _is_at_end(self) -> bool:
         return self.current >= len(self.source)
@@ -209,6 +212,25 @@ class Scanner:
 
         value = self.source[self.start + 1 : self.current - 1]
         self._add_token(TokenType.STRING, value)
+
+    def _is_digit(self, c):
+        return c >= "0" and c <= "9"
+
+    def _peek_next(self):
+        if self.current + 1 >= len(self.source):
+            return "\0"
+        return self.source[self.current + 1]
+
+    def _number(self):
+        while self._is_digit(self._peek()):
+            self._advance()
+
+        if self._peek() == "." and self._is_digit(self._peek_next()):
+            self._advance()
+            while self._is_digit(self._peek()):
+                self._advance()
+
+        self._add_token(TokenType.NUMBER, float(self.source[self.start : self.current]))
 
 
 def main():
