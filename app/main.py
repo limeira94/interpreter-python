@@ -66,21 +66,6 @@ class Token:
 
 
 class Scanner:
-    # _SINGLE_CHAR_TOKENS = {
-    #     "(": TokenType.LEFT_PAREN,
-    #     ")": TokenType.RIGHT_PAREN,
-    #     "{": TokenType.LEFT_BRACE,
-    #     "}": TokenType.RIGHT_BRACE,
-    #     ",": TokenType.COMMA,
-    #     ".": TokenType.DOT,
-    #     "-": TokenType.MINUS,
-    #     "+": TokenType.PLUS,
-    #     ";": TokenType.SEMICOLON,
-    #     "*": TokenType.STAR,
-    #     "==": TokenType.EQUAL_EQUAL,
-    #     "=": TokenType.EQUAL,
-    # }
-
     def __init__(self, source: str):
         self.source = source  # "(()))++--**"
         self.tokens = []
@@ -158,9 +143,15 @@ class Scanner:
             case '"':
                 self._string()
                 pass
+            case 'o':
+                if self._match('r'):
+                    self._add_token(TokenType.OR)
+                pass
             case _:
                 if self._is_digit(char):
                     self._number()
+                elif self._is_alpha(char):
+                    self._identifier()
                 else:
                     print(
                         f"[line {self.line}] Error: Unexpected character: {char}",
@@ -232,6 +223,17 @@ class Scanner:
 
         self._add_token(TokenType.NUMBER, float(self.source[self.start : self.current]))
 
+    def _identifier(self):
+        while self._is_alpha_numeric(self._peek()):
+            self._advance()
+        self._add_token(TokenType.IDENTIFIER)
+    
+    def _is_alpha(self, c: str) -> bool:
+        return (c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z') or c == '_'
+    
+    def _is_alpha_numeric(self, c: str) -> bool:
+        return self._is_alpha(c) or self._is_digit(c) 
+        
 
 def main():
     if len(sys.argv) < 3:
