@@ -54,6 +54,26 @@ class TokenType(Enum):
     EOF = auto()
 
 
+KEYWORDS = {
+    "and": TokenType.AND,
+    "class": TokenType.CLASS,
+    "else": TokenType.ELSE,
+    "false": TokenType.FALSE,
+    "for": TokenType.FOR,
+    "fun": TokenType.FUN,
+    "if": TokenType.IF,
+    "nil": TokenType.NIL,
+    "or": TokenType.OR,
+    "print": TokenType.PRINT,
+    "return": TokenType.RETURN,
+    "super": TokenType.SUPER,
+    "this": TokenType.THIS,
+    "true": TokenType.TRUE,
+    "var": TokenType.VAR,
+    "while": TokenType.WHILE,
+}
+
+
 @dataclass
 class Token:
     type: TokenType
@@ -143,8 +163,8 @@ class Scanner:
             case '"':
                 self._string()
                 pass
-            case 'o':
-                if self._match('r'):
+            case "o":
+                if self._match("r"):
                     self._add_token(TokenType.OR)
                 pass
             case _:
@@ -226,14 +246,19 @@ class Scanner:
     def _identifier(self):
         while self._is_alpha_numeric(self._peek()):
             self._advance()
-        self._add_token(TokenType.IDENTIFIER)
-    
+        text = self.source[self.start : self.current]
+        token_type = KEYWORDS.get(text)
+        if token_type is None:
+            token_type = TokenType.IDENTIFIER
+
+        self._add_token(token_type)
+
     def _is_alpha(self, c: str) -> bool:
-        return (c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z') or c == '_'
-    
+        return (c >= "a" and c <= "z") or (c >= "A" and c <= "Z") or c == "_"
+
     def _is_alpha_numeric(self, c: str) -> bool:
-        return self._is_alpha(c) or self._is_digit(c) 
-        
+        return self._is_alpha(c) or self._is_digit(c)
+
 
 def main():
     if len(sys.argv) < 3:
